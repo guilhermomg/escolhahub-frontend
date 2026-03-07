@@ -67,3 +67,52 @@ export const revenueData = [
   { month: 'Fev', receita: 5400 },
   { month: 'Mar', receita: 5800 },
 ]
+
+export function getStudentById(id: string): Student | undefined {
+  return students.find(s => s.id === id)
+}
+
+export function getEnrollmentsByStudent(studentId: string): Enrollment[] {
+  return enrollments.filter(e => e.studentId === studentId)
+}
+
+export function getAttendanceByStudent(studentId: string): Attendance[] {
+  const studentEnrollments = getEnrollmentsByStudent(studentId)
+  const enrollmentIds = studentEnrollments.map(e => e.id)
+  return recentAttendance.filter(a => enrollmentIds.includes(a.enrollmentId))
+}
+
+export function getPlanById(id: string): PaymentPlan | undefined {
+  return paymentPlans.find(p => p.id === id)
+}
+
+export function calculatePresenceStats(studentId: string) {
+  const attendance = getAttendanceByStudent(studentId)
+  const total = attendance.length
+  const present = attendance.filter(a => a.present).length
+  const absent = total - present
+  const percentage = total > 0 ? Math.round((present / total) * 100) : 0
+  return { total, present, absent, percentage }
+}
+
+export function getNextPaymentInfo(studentId: string) {
+  const studentEnrollments = getEnrollmentsByStudent(studentId).filter(e => e.status === 'ativa')
+  if (studentEnrollments.length === 0) return null
+  
+  const nearestEnrollment = studentEnrollments.reduce((nearest, current) => {
+    return new Date(current.endDate) < new Date(nearest.endDate) ? current : nearest
+  })
+  
+  const plan = getPlanById(nearestEnrollment.planId)
+  const endDate = new Date(nearestEnrollment.endDate)
+  const today = new Date()
+  const daysUntilEnd = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  
+  return {
+    enrollment: nearestEnrollment,
+    plan,
+    daysUntilEnd,
+    isExpiringSoon: daysUntilEnd <= 30 && daysUntilEnd > 0,
+    isExpired: daysUntilEnd <= 0
+  }
+}
