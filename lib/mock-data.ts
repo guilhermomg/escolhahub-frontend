@@ -181,3 +181,43 @@ export function addEnrollment(enrollment: Omit<Enrollment, 'id'>): Enrollment {
   enrollments.push(newEnrollment)
   return newEnrollment
 }
+
+export function getClassesByWeekDay(weekDay: string): Class[] {
+  return classes.filter(c => c.weekDays.includes(weekDay))
+}
+
+export function getTodayWeekDay(): string {
+  const days = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']
+  return days[new Date().getDay()]
+}
+
+export function getWeekDayFromDate(date: Date): string {
+  const days = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']
+  return days[date.getDay()]
+}
+
+export function addAttendance(attendance: Omit<Attendance, 'id'>): Attendance {
+  const newAttendance: Attendance = {
+    ...attendance,
+    id: String(Date.now())
+  }
+  recentAttendance.push(newAttendance)
+  return newAttendance
+}
+
+export function updateAttendance(id: string, updates: Partial<Attendance>): Attendance | null {
+  const index = recentAttendance.findIndex(a => a.id === id)
+  if (index === -1) return null
+  recentAttendance[index] = { ...recentAttendance[index], ...updates }
+  return recentAttendance[index]
+}
+
+export function getAttendanceByClassAndDate(classId: string, date: string): Attendance[] {
+  const classEnrollments = getEnrollmentsByClass(classId)
+  const enrollmentIds = classEnrollments.map(e => e.id)
+  return recentAttendance.filter(a => enrollmentIds.includes(a.enrollmentId) && a.date === date)
+}
+
+export function getEnrollmentById(id: string): Enrollment | undefined {
+  return enrollments.find(e => e.id === id)
+}
