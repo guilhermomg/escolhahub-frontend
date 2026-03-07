@@ -55,11 +55,11 @@ export default function TurmasPage() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="lg:pl-64">
         <Header title="Turmas" subtitle="Gerencie as turmas da escola" />
-        <main className="flex-1 overflow-auto p-6">
+        <main className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <ClassList
@@ -75,7 +75,7 @@ export default function TurmasPage() {
               {selectedClass ? (
                 <ClassDetail classData={selectedClass} onEdit={handleEdit} />
               ) : (
-                <div className="h-full flex items-center justify-center bg-card rounded-lg border border-border">
+                <div className="h-96 flex items-center justify-center bg-card rounded-lg border border-border">
                   <p className="text-muted-foreground">
                     Selecione uma turma para ver os detalhes
                   </p>
