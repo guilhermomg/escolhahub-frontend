@@ -2,6 +2,7 @@
 
 import { Bell, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface HeaderProps {
   title: string
