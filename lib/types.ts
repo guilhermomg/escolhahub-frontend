@@ -12,6 +12,9 @@ export interface Class {
   name: string
   description: string
   schedule: string
+  weekDays: string[]
+  startTime: string
+  endTime: string
   maxStudents: number
   currentStudents: number
 }

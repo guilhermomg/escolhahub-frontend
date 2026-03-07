@@ -12,11 +12,11 @@ export const students: Student[] = [
 ]
 
 export const classes: Class[] = [
-  { id: '1', name: 'Desenho Basico', description: 'Fundamentos do desenho para iniciantes', schedule: 'Seg/Qua 14:00-16:00', maxStudents: 10, currentStudents: 6 },
-  { id: '2', name: 'Retrato e Figura Humana', description: 'Tecnicas de retrato e anatomia', schedule: 'Ter/Qui 10:00-12:00', maxStudents: 8, currentStudents: 5 },
-  { id: '3', name: 'Pintura Digital', description: 'Introducao a pintura digital', schedule: 'Sex 14:00-17:00', maxStudents: 6, currentStudents: 4 },
-  { id: '4', name: 'Aquarela', description: 'Tecnicas de aquarela', schedule: 'Sab 09:00-12:00', maxStudents: 8, currentStudents: 7 },
-  { id: '5', name: 'Ilustracao Avancada', description: 'Projetos de ilustracao profissional', schedule: 'Seg/Qua 19:00-21:00', maxStudents: 6, currentStudents: 3 },
+  { id: '1', name: 'Desenho Basico', description: 'Fundamentos do desenho para iniciantes', schedule: 'Seg/Qua 14:00-16:00', weekDays: ['seg', 'qua'], startTime: '14:00', endTime: '16:00', maxStudents: 10, currentStudents: 6 },
+  { id: '2', name: 'Retrato e Figura Humana', description: 'Tecnicas de retrato e anatomia', schedule: 'Ter/Qui 10:00-12:00', weekDays: ['ter', 'qui'], startTime: '10:00', endTime: '12:00', maxStudents: 8, currentStudents: 5 },
+  { id: '3', name: 'Pintura Digital', description: 'Introducao a pintura digital', schedule: 'Sex 14:00-17:00', weekDays: ['sex'], startTime: '14:00', endTime: '17:00', maxStudents: 6, currentStudents: 4 },
+  { id: '4', name: 'Aquarela', description: 'Tecnicas de aquarela', schedule: 'Sab 09:00-12:00', weekDays: ['sab'], startTime: '09:00', endTime: '12:00', maxStudents: 8, currentStudents: 7 },
+  { id: '5', name: 'Ilustracao Avancada', description: 'Projetos de ilustracao profissional', schedule: 'Seg/Qua 19:00-21:00', weekDays: ['seg', 'qua'], startTime: '19:00', endTime: '21:00', maxStudents: 6, currentStudents: 3 },
 ]
 
 export const paymentPlans: PaymentPlan[] = [
@@ -115,4 +115,43 @@ export function getNextPaymentInfo(studentId: string) {
     isExpiringSoon: daysUntilEnd <= 30 && daysUntilEnd > 0,
     isExpired: daysUntilEnd <= 0
   }
+}
+
+export function getClassById(id: string): Class | undefined {
+  return classes.find(c => c.id === id)
+}
+
+export function getEnrollmentsByClass(classId: string): Enrollment[] {
+  return enrollments.filter(e => e.classId === classId && e.status === 'ativa')
+}
+
+export function getAttendanceByClass(classId: string): Attendance[] {
+  const classEnrollments = getEnrollmentsByClass(classId)
+  const enrollmentIds = classEnrollments.map(e => e.id)
+  return recentAttendance.filter(a => enrollmentIds.includes(a.enrollmentId))
+}
+
+export function calculateClassPresenceStats(classId: string) {
+  const attendance = getAttendanceByClass(classId)
+  const total = attendance.length
+  const present = attendance.filter(a => a.present).length
+  const absent = total - present
+  const percentage = total > 0 ? Math.round((present / total) * 100) : 0
+  return { total, present, absent, percentage }
+}
+
+export const WEEK_DAYS = [
+  { value: 'seg', label: 'Segunda' },
+  { value: 'ter', label: 'Terca' },
+  { value: 'qua', label: 'Quarta' },
+  { value: 'qui', label: 'Quinta' },
+  { value: 'sex', label: 'Sexta' },
+  { value: 'sab', label: 'Sabado' },
+  { value: 'dom', label: 'Domingo' },
+]
+
+export function formatWeekDays(days: string[]): string {
+  return days
+    .map(d => WEEK_DAYS.find(wd => wd.value === d)?.label || d)
+    .join(', ')
 }
