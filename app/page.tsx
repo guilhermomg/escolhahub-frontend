@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import { StatCard } from "@/components/dashboard/stat-card"
@@ -9,17 +12,19 @@ import { students, classes, enrollments } from "@/lib/mock-data"
 import { Users, BookOpen, ClipboardList, DollarSign } from "lucide-react"
 
 export default function DashboardPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const activeEnrollments = enrollments.filter(e => e.status === 'ativa').length
   const totalRevenue = 5800
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       
       <main className="lg:pl-64">
         <Header 
           title="Dashboard" 
           subtitle="Visao geral da sua escola" 
+          onMenuClick={() => setSidebarOpen(true)}
         />
         
         <div className="p-4 lg:p-6 space-y-6">

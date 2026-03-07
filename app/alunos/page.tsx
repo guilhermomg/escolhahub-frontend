@@ -10,6 +10,7 @@ import { students as initialStudents } from "@/lib/mock-data"
 import type { Student } from "@/lib/types"
 
 export default function AlunosPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [students, setStudents] = useState<Student[]>(initialStudents)
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -57,11 +58,12 @@ export default function AlunosPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="lg:pl-64">
         <Header 
           title="Alunos" 
           subtitle="Gerencie os alunos da escola" 
+          onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="p-6">
           <div className="flex flex-col lg:flex-row gap-6">

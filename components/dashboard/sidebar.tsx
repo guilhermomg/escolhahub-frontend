@@ -11,6 +11,11 @@ import {
   LayoutDashboard,
   GraduationCap,
 } from "lucide-react"
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+} from "@/components/ui/sheet"
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -20,11 +25,16 @@ const navigation = [
   { name: "Presenca", href: "/presenca", icon: Calendar },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+export function Sidebar({ open, onOpenChange }: SidebarProps) {
   const pathname = usePathname()
 
-  return (
-    <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-sidebar border-r border-sidebar-border">
+  const sidebarContent = (
+    <>
       <div className="flex items-center gap-2 h-16 px-6 border-b border-sidebar-border">
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
           <GraduationCap className="w-5 h-5 text-primary-foreground" />
@@ -39,6 +49,7 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => onOpenChange?.(false)}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                 isActive
@@ -64,6 +75,23 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile Sidebar */}
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetContent side="left" className="w-64 p-0 bg-sidebar border-sidebar-border">
+          <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
+          {sidebarContent}
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-sidebar border-r border-sidebar-border">
+        {sidebarContent}
+      </aside>
+    </>
   )
 }

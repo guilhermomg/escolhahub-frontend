@@ -7,13 +7,14 @@ import { ThemeToggle } from "@/components/theme-toggle"
 interface HeaderProps {
   title: string
   subtitle?: string
+  onMenuClick?: () => void
 }
 
-export function Header({ title, subtitle }: HeaderProps) {
+export function Header({ title, subtitle, onMenuClick }: HeaderProps) {
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 lg:px-6 bg-background/95 backdrop-blur border-b border-border">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="lg:hidden">
+        <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuClick}>
           <Menu className="w-5 h-5" />
         </Button>
         <div>

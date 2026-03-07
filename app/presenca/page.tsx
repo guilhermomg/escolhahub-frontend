@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import type { Class } from "@/lib/types"
 
 export default function PresencaPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list")
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [selectedClass, setSelectedClass] = useState<Class | null>(null)
@@ -25,9 +26,13 @@ export default function PresencaPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="lg:pl-64">
-        <Header title="Presenca" subtitle="Gerencie a presenca dos alunos" />
+        <Header 
+          title="Presenca" 
+          subtitle="Gerencie a presenca dos alunos" 
+          onMenuClick={() => setSidebarOpen(true)}
+        />
         <main className="p-6">
           <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center gap-2 p-1 bg-secondary rounded-lg">

@@ -11,6 +11,7 @@ import { classes as initialClasses, addEnrollment } from "@/lib/mock-data"
 import type { Class, Enrollment } from "@/lib/types"
 
 export default function TurmasPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [classes, setClasses] = useState<Class[]>(initialClasses)
   const [selectedClass, setSelectedClass] = useState<Class | null>(null)
   const [formOpen, setFormOpen] = useState(false)
@@ -82,9 +83,13 @@ export default function TurmasPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="lg:pl-64">
-        <Header title="Turmas" subtitle="Gerencie as turmas da escola" />
+        <Header 
+          title="Turmas" 
+          subtitle="Gerencie as turmas da escola" 
+          onMenuClick={() => setSidebarOpen(true)}
+        />
         <main className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
