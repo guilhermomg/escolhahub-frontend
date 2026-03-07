@@ -12,20 +12,24 @@ import {
   CheckCircle2,
   XCircle,
   BookOpen,
+  UserPlus,
+  AlertCircle,
 } from "lucide-react"
 import {
   getEnrollmentsByClass,
   calculateClassPresenceStats,
   formatWeekDays,
+  hasActivePlan,
 } from "@/lib/mock-data"
 import type { Class } from "@/lib/types"
 
 interface ClassDetailProps {
   classData: Class
   onEdit: (cls: Class) => void
+  onEnroll: (cls: Class) => void
 }
 
-export function ClassDetail({ classData, onEdit }: ClassDetailProps) {
+export function ClassDetail({ classData, onEdit, onEnroll }: ClassDetailProps) {
   const enrollments = getEnrollmentsByClass(classData.id)
   const presenceStats = calculateClassPresenceStats(classData.id)
   const occupancyPercentage = Math.round(
@@ -64,10 +68,16 @@ export function ClassDetail({ classData, onEdit }: ClassDetailProps) {
                 {classData.description}
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => onEdit(classData)}>
-              <Pencil className="w-4 h-4 mr-2" />
-              Editar
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="default" size="sm" onClick={() => onEnroll(classData)}>
+                <UserPlus className="w-4 h-4 mr-2" />
+                Matricular
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onEdit(classData)}>
+                <Pencil className="w-4 h-4 mr-2" />
+                Editar
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -145,34 +155,63 @@ export function ClassDetail({ classData, onEdit }: ClassDetailProps) {
               </p>
             ) : (
               <div className="space-y-3 max-h-[300px] overflow-y-auto">
-                {enrollments.map((enrollment) => (
-                  <div
-                    key={enrollment.id}
-                    className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <span className="text-xs font-medium text-primary">
-                          {enrollment.studentName
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </span>
+                {enrollments.map((enrollment) => {
+                  const planStatus = hasActivePlan(enrollment.studentId)
+                  const endDate = new Date(enrollment.endDate)
+                  const today = new Date()
+                  const daysUntilEnd = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+                  const isExpiringSoon = daysUntilEnd <= 30 && daysUntilEnd > 0
+                  const isExpired = daysUntilEnd <= 0
+
+                  return (
+                    <div
+                      key={enrollment.id}
+                      className={`flex items-center justify-between p-3 rounded-lg ${
+                        isExpired
+                          ? "bg-destructive/10 border border-destructive/30"
+                          : isExpiringSoon
+                          ? "bg-[oklch(0.75_0.18_55)]/10 border border-[oklch(0.75_0.18_55)]/30"
+                          : "bg-secondary/50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {enrollment.studentName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-card-foreground">
+                              {enrollment.studentName}
+                            </p>
+                            {isExpired && (
+                              <AlertCircle className="w-4 h-4 text-destructive" />
+                            )}
+                            {isExpiringSoon && !isExpired && (
+                              <AlertCircle className="w-4 h-4 text-[oklch(0.75_0.18_55)]" />
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {enrollment.planName} - {isExpired ? (
+                              <span className="text-destructive">Vencido</span>
+                            ) : isExpiringSoon ? (
+                              <span className="text-[oklch(0.75_0.18_55)]">Vence em {daysUntilEnd} dias</span>
+                            ) : (
+                              <span>Valido ate {endDate.toLocaleDateString("pt-BR")}</span>
+                            )}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-card-foreground">
-                          {enrollment.studentName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {enrollment.planName}
-                        </p>
-                      </div>
+                      {getLevelBadge(enrollment.level)}
                     </div>
-                    {getLevelBadge(enrollment.level)}
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </CardContent>

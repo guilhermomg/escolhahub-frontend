@@ -6,14 +6,17 @@ import { Header } from "@/components/dashboard/header"
 import { ClassList } from "@/components/classes/class-list"
 import { ClassDetail } from "@/components/classes/class-detail"
 import { ClassForm } from "@/components/classes/class-form"
-import { classes as initialClasses } from "@/lib/mock-data"
-import type { Class } from "@/lib/types"
+import { EnrollmentForm } from "@/components/classes/enrollment-form"
+import { classes as initialClasses, addEnrollment } from "@/lib/mock-data"
+import type { Class, Enrollment } from "@/lib/types"
 
 export default function TurmasPage() {
   const [classes, setClasses] = useState<Class[]>(initialClasses)
   const [selectedClass, setSelectedClass] = useState<Class | null>(null)
   const [formOpen, setFormOpen] = useState(false)
   const [editingClass, setEditingClass] = useState<Class | null>(null)
+  const [enrollmentOpen, setEnrollmentOpen] = useState(false)
+  const [enrollingClass, setEnrollingClass] = useState<Class | null>(null)
 
   const handleAdd = () => {
     setEditingClass(null)
@@ -30,6 +33,29 @@ export default function TurmasPage() {
     if (selectedClass?.id === id) {
       setSelectedClass(null)
     }
+  }
+
+  const handleEnroll = (cls: Class) => {
+    setEnrollingClass(cls)
+    setEnrollmentOpen(true)
+  }
+
+  const handleSaveEnrollment = (enrollment: Omit<Enrollment, "id">) => {
+    addEnrollment(enrollment)
+    setClasses((prev) =>
+      prev.map((c) =>
+        c.id === enrollment.classId
+          ? { ...c, currentStudents: c.currentStudents + 1 }
+          : c
+      )
+    )
+    if (selectedClass?.id === enrollment.classId) {
+      setSelectedClass({
+        ...selectedClass,
+        currentStudents: selectedClass.currentStudents + 1,
+      })
+    }
+    setEnrollmentOpen(false)
   }
 
   const handleSave = (data: Omit<Class, "id" | "currentStudents">) => {
@@ -73,7 +99,7 @@ export default function TurmasPage() {
             </div>
             <div className="lg:col-span-2">
               {selectedClass ? (
-                <ClassDetail classData={selectedClass} onEdit={handleEdit} />
+                <ClassDetail classData={selectedClass} onEdit={handleEdit} onEnroll={handleEnroll} />
               ) : (
                 <div className="h-96 flex items-center justify-center bg-card rounded-lg border border-border">
                   <p className="text-muted-foreground">
@@ -92,6 +118,15 @@ export default function TurmasPage() {
         classData={editingClass}
         onSave={handleSave}
       />
+
+      {enrollingClass && (
+        <EnrollmentForm
+          open={enrollmentOpen}
+          onOpenChange={setEnrollmentOpen}
+          classData={enrollingClass}
+          onSave={handleSaveEnrollment}
+        />
+      )}
     </div>
   )
 }

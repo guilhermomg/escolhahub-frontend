@@ -155,3 +155,29 @@ export function formatWeekDays(days: string[]): string {
     .map(d => WEEK_DAYS.find(wd => wd.value === d)?.label || d)
     .join(', ')
 }
+
+export function hasActivePlan(studentId: string): { hasActive: boolean; enrollment: Enrollment | null } {
+  const activeEnrollment = enrollments.find(
+    e => e.studentId === studentId && e.status === 'ativa' && new Date(e.endDate) >= new Date()
+  )
+  return {
+    hasActive: !!activeEnrollment,
+    enrollment: activeEnrollment || null
+  }
+}
+
+export function getStudentsNotInClass(classId: string): Student[] {
+  const classEnrollmentStudentIds = enrollments
+    .filter(e => e.classId === classId && e.status === 'ativa')
+    .map(e => e.studentId)
+  return students.filter(s => !classEnrollmentStudentIds.includes(s.id))
+}
+
+export function addEnrollment(enrollment: Omit<Enrollment, 'id'>): Enrollment {
+  const newEnrollment: Enrollment = {
+    ...enrollment,
+    id: String(Date.now())
+  }
+  enrollments.push(newEnrollment)
+  return newEnrollment
+}

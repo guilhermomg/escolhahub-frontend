@@ -7,7 +7,6 @@ import {
   Users,
   BookOpen,
   CreditCard,
-  ClipboardList,
   Calendar,
   LayoutDashboard,
   GraduationCap,
@@ -17,7 +16,6 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Alunos", href: "/alunos", icon: Users },
   { name: "Turmas", href: "/turmas", icon: BookOpen },
-  { name: "Matriculas", href: "/matriculas", icon: ClipboardList },
   { name: "Planos", href: "/planos", icon: CreditCard },
   { name: "Presenca", href: "/presenca", icon: Calendar },
 ]
