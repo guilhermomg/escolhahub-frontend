@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/alunio-frontend',
+  basePath: '/escolhahub-frontend',
   typescript: {
     ignoreBuildErrors: true,
   },
