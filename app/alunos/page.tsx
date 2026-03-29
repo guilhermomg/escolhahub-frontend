@@ -60,9 +60,9 @@ export default function AlunosPage() {
     <div className="min-h-screen bg-background">
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="lg:pl-64">
-        <Header 
-          title="Alunos" 
-          subtitle="Gerencie os alunos da escola" 
+        <Header
+          title="Alunos"
+          subtitle="Gerencie os alunos da escola"
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="p-6">

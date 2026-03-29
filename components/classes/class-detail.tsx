@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { useToast } from "@/hooks/use-toast"
 import {
   Users,
   Clock,
@@ -14,6 +15,7 @@ import {
   BookOpen,
   UserPlus,
   AlertCircle,
+  Link2,
 } from "lucide-react"
 import {
   getEnrollmentsByClass,
@@ -30,12 +32,23 @@ interface ClassDetailProps {
 }
 
 export function ClassDetail({ classData, onEdit, onEnroll }: ClassDetailProps) {
+  const { toast } = useToast()
   const enrollments = getEnrollmentsByClass(classData.id)
   const presenceStats = calculateClassPresenceStats(classData.id)
   const occupancyPercentage = Math.round(
     (classData.currentStudents / classData.maxStudents) * 100
   )
   const availableSpots = classData.maxStudents - classData.currentStudents
+
+  const copyRegistrationLink = () => {
+    const link = `${window.location.origin}/inscricao/${classData.id}`
+    navigator.clipboard.writeText(link).then(() => {
+      toast({
+        title: "Link copiado!",
+        description: "O link de inscrição foi copiado para a área de transferência.",
+      })
+    })
+  }
 
   const getLevelBadge = (level: string) => {
     const colors: Record<string, string> = {
@@ -68,7 +81,11 @@ export function ClassDetail({ classData, onEdit, onEnroll }: ClassDetailProps) {
                 {classData.description}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <Button variant="secondary" size="sm" onClick={copyRegistrationLink}>
+                <Link2 className="w-4 h-4 mr-2" />
+                Copiar Link
+              </Button>
               <Button variant="default" size="sm" onClick={() => onEnroll(classData)}>
                 <UserPlus className="w-4 h-4 mr-2" />
                 Matricular
@@ -166,13 +183,12 @@ export function ClassDetail({ classData, onEdit, onEnroll }: ClassDetailProps) {
                   return (
                     <div
                       key={enrollment.id}
-                      className={`flex items-center justify-between p-3 rounded-lg ${
-                        isExpired
+                      className={`flex items-center justify-between p-3 rounded-lg ${isExpired
                           ? "bg-destructive/10 border border-destructive/30"
                           : isExpiringSoon
-                          ? "bg-[oklch(0.75_0.18_55)]/10 border border-[oklch(0.75_0.18_55)]/30"
-                          : "bg-secondary/50"
-                      }`}
+                            ? "bg-[oklch(0.75_0.18_55)]/10 border border-[oklch(0.75_0.18_55)]/30"
+                            : "bg-secondary/50"
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">

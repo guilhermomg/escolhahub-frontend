@@ -85,9 +85,9 @@ export default function TurmasPage() {
     <div className="min-h-screen bg-background">
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="lg:pl-64">
-        <Header 
-          title="Turmas" 
-          subtitle="Gerencie as turmas da escola" 
+        <Header
+          title="Turmas"
+          subtitle="Gerencie as turmas da escola"
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="p-6">

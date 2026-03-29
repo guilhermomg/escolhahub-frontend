@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Plus, Search, MoreVertical, Pencil, Trash2, Users, Clock } from "lucide-react"
+import { Plus, Search, MoreVertical, Pencil, Trash2, Users, Clock, Link2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatWeekDays } from "@/lib/mock-data"
 import type { Class } from "@/lib/types"
@@ -43,8 +44,20 @@ export function ClassList({
   onEdit,
   onDelete,
 }: ClassListProps) {
+  const { toast } = useToast()
   const [search, setSearch] = useState("")
   const [deleteId, setDeleteId] = useState<string | null>(null)
+
+  const copyRegistrationLink = (classId: string, className: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const link = `${window.location.origin}/inscricao/${classId}`
+    navigator.clipboard.writeText(link).then(() => {
+      toast({
+        title: "Link copiado!",
+        description: `Link de inscrição para "${className}" copiado.`,
+      })
+    })
+  }
 
   const filtered = classes.filter(
     (c) =>
@@ -128,6 +141,12 @@ export function ClassList({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => copyRegistrationLink(cls.id, cls.name, e)}
+                      >
+                        <Link2 className="w-4 h-4 mr-2" />
+                        Copiar Link de Inscrição
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation()

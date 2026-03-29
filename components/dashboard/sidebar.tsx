@@ -41,7 +41,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
         </div>
         <span className="text-lg font-semibold text-sidebar-foreground">EscolaHub</span>
       </div>
-      
+
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navigation.map((item) => {
           const isActive = pathname === item.href
@@ -65,7 +65,14 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
       </nav>
 
       <div className="p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 px-3 py-2">
+        <Link
+          href="/configuracoes"
+          onClick={() => onOpenChange?.(false)}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-sidebar-accent",
+            pathname === "/configuracoes" && "bg-sidebar-accent"
+          )}
+        >
           <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
             <span className="text-sm font-medium text-primary">A</span>
           </div>
@@ -73,7 +80,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
             <p className="text-sm font-medium text-sidebar-foreground truncate">Admin</p>
             <p className="text-xs text-sidebar-foreground/60 truncate">admin@escola.com</p>
           </div>
-        </div>
+        </Link>
       </div>
     </>
   )

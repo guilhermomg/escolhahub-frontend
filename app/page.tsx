@@ -19,14 +19,14 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
-      
+
       <main className="lg:pl-64">
-        <Header 
-          title="Dashboard" 
-          subtitle="Visao geral da sua escola" 
+        <Header
+          title="Dashboard"
+          subtitle="Visao geral da sua escola"
           onMenuClick={() => setSidebarOpen(true)}
         />
-        
+
         <div className="p-4 lg:p-6 space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -73,7 +73,7 @@ export default function DashboardPage() {
             {/* Right Column - 1/3 */}
             <div className="space-y-6">
               <ExpiringPlans />
-              
+
               {/* Level Distribution */}
               <div className="p-6 rounded-xl bg-card border border-border">
                 <h3 className="font-semibold text-foreground mb-4">Distribuicao por Nivel</h3>

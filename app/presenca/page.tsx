@@ -28,9 +28,9 @@ export default function PresencaPage() {
     <div className="min-h-screen bg-background">
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
       <div className="lg:pl-64">
-        <Header 
-          title="Presenca" 
-          subtitle="Gerencie a presenca dos alunos" 
+        <Header
+          title="Presenca"
+          subtitle="Gerencie a presenca dos alunos"
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="p-6">
